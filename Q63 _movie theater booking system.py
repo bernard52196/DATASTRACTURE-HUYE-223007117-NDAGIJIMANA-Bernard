@@ -1,76 +1,103 @@
-
-# 63. Movie Theater Booking System: Stack for undoing bookings, queue for ticket requests and list for available movie screenings
-
 from collections import deque
 
-class MovieTheaterBookingSystem:
-    def __init__(self):
-        self.available_movies = ["blackman 4:00pm", "ware 3:00pm", "Ip man 7:00pm"]  
-        self.ticket_requests = deque() 
-        self.booking_stack = [] 
-    
-    def display_movies(self):
-        print("\nAvailable Movies:")
-        for i, movie in enumerate(self.available_movies, start=1):
-            print(f"{i}. {movie}")
-    
-    def request_ticket(self, customer_name, movie_choice):
-        if 1 <= movie_choice <= len(self.available_movies):
-            movie_name = self.available_movies[movie_choice - 1]
-            self.ticket_requests.append((customer_name, movie_name))
-            print(f"\nTicket request added for {customer_name} to watch '{movie_name}'")
-        else:
-            print("\nInvalid movie selection. Please try again.")
-    
-    def process_request(self):
-        if self.ticket_requests:
-            customer_name, movie_name = self.ticket_requests.popleft()
-            self.booking_stack.append((customer_name, movie_name))
-            print(f"\nBooking confirmed: {customer_name} is watching '{movie_name}'")
-        else:
-            print("\nNo ticket requests to process.")
-    
-    def undo_booking(self):
-        if self.booking_stack:
-            customer_name, movie_name = self.booking_stack.pop()
-            print(f"\nBooking for {customer_name} watching '{movie_name}' has been undone.")
-        else:
-            print("\nNo bookings to undo.")
+booking_stack = []
+booking_ticket_queue = deque()
+movie_list = ["Blackman 4:00pm", "Ware 3:00pm", "Ip Man 7:00pm"]
 
-if __name__ == "__main__":
-    theater = MovieTheaterBookingSystem()
-    
+def available_movie():
+    print("\nAvailable Movie List:")
+    for movie in movie_list:
+        print(f"- {movie}")
+
+def booking_movie(name, movie):
+    booking = f"Booking: {name} for {movie}"
+    booking_stack.append(booking)
+    print(f"{booking}, added successfully.")
+
+def undo_last_booking():
+    if booking_stack:
+        last_booking = booking_stack.pop()
+        print(f"{last_booking}, undone.")
+    else:
+        print("No bookings available to undo.")
+
+def add_request(name, movie):
+    request = f"Request: {name} for {movie}"
+    booking_ticket_queue.append(request)
+    print(f"{request}, added to the queue.")
+
+def process_ticket_request():
+    if booking_ticket_queue:
+        next_request = booking_ticket_queue.popleft()
+        print(f"Processing: {next_request}")
+    else:
+        print("No ticket requests to process.")
+
+def display_movie_booked():
+    if booking_stack:
+        print("\nMovies Booked:")
+        for booked in booking_stack:
+            print(f"- {booked}")
+    else:
+        print("No movies have been booked.")
+
+def display_request():
+    if booking_ticket_queue:
+        print("\nPending Ticket Requests:")
+        for request in booking_ticket_queue:
+            print(f"- {request}")
+    else:
+        print("No ticket requests available.")
+
+def movie_booking_system():
     while True:
-        print("\nMovie Theater Booking System Menu:")
-        print("1. Display Available Movies")
-        print("2. Request Ticket")
-        print("3. Process Ticket Request")
-        print("4. Undo Last Booking")
-        print("5. Exit")
+        print("\nMovie Booking System Menu:")
+        print("1. View Available Movies")
+        print("2. Book a Movie")
+        print("3. Undo Last Booking")
+        print("4. Add a Ticket Request")
+        print("5. Process a Ticket Request")
+        print("6. Display Booked Movies")
+        print("7. Display Ticket Requests")
+        print("8. Exit")
         
-        choice = input("Enter your choice (1-5): ")
-        
-        if choice == '1':
-            theater.display_movies()
-        
-        elif choice == '2':
-            theater.display_movies()
-            try:
-                customer_name = input("\nEnter customer's name: ")
-                movie_choice = int(input("Enter the number of the movie: "))
-                theater.request_ticket(customer_name, movie_choice)
-            except ValueError:
-                print("\nInvalid input. Please enter a valid number.")
-        
-        elif choice == '3':
-            theater.process_request()
-        
-        elif choice == '4':
-            theater.undo_booking()
-        
-        elif choice == '5':
-            print("\nThank you for using the Movie Theater Booking System. Goodbye!")
+        try:
+            choice = int(input("Enter your choice: "))
+        except ValueError:
+            print("Invalid input! Please enter a number between 1 and 8.")
+            continue
+
+        if choice == 1:
+            available_movie()
+        elif choice == 2:
+            name = input("Enter your name: ")
+            available_movie()
+            movie = input("Enter the movie you want to book: ")
+            if movie in movie_list:
+                booking_movie(name, movie)
+            else:
+                print("The selected movie does not exist.")
+        elif choice == 3:
+            undo_last_booking()
+        elif choice == 4:
+            name = input("Enter your name: ")
+            available_movie()
+            movie = input("Enter the movie for the ticket request: ")
+            if movie in movie_list:
+                add_request(name, movie)
+            else:
+                print("The selected movie does not exist.")
+        elif choice == 5:
+            process_ticket_request()
+        elif choice == 6:
+            display_movie_booked()
+        elif choice == 7:
+            display_request()
+        elif choice == 8:
+            print("Thank you for using the Movie Booking System. Goodbye!")
             break
-        
         else:
-            print("\nInvalid choice. Please enter a number between 1 and 5.")
+            print("Invalid choice! Please select a valid option.")
+
+
+movie_booking_system()
